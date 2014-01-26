@@ -108,9 +108,3 @@ for ($jj=10; $jj<=1_000_000; $jj*=10) {
     $total =$mean_change_n[$jj] + $mean_change[$jj];
     printf "[%7d] Winning chance: don't change door = %4.1f%::%4.1f%; \t change door = %4.1f%::%4.1f%; \t total = %5.1f%\n", $jj, $mean_change_n[$jj], $std_change_n[$jj], $mean_change[$jj], $std_change[$jj], $total;
 }
-
-#&calc_prob(25);
-#&calc_prob(1000);
-#&calc_prob(10000);
-#&calc_prob(100000);
-#&calc_prob(1000000);
