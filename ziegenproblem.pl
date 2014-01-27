@@ -31,7 +31,7 @@ sub calc_prob {
                 elsif (($p_prize == 2) && ($p_user_1 == 3)) { $p_host = 1; }
                 elsif (($p_prize == 3) && ($p_user_1 == 1)) { $p_host = 2; }
                 elsif (($p_prize == 3) && ($p_user_1 == 2)) { $p_host = 1; }
-                else                                        { print "Erro!\n"; }
+                else                                        { print "Error!\n"; }
             }
 
             # user final guess after opportunity to change doors
@@ -42,7 +42,7 @@ sub calc_prob {
                 elsif (($p_user_1 == 2) && ($p_host == 3)) { $p_user_2 = 1; }
                 elsif (($p_user_1 == 3) && ($p_host == 1)) { $p_user_2 = 2; }
                 elsif (($p_user_1 == 3) && ($p_host == 2)) { $p_user_2 = 1; }
-                else                                       { print "Erro!\n"; }
+                else                                       { print "Error!\n"; }
             } else {
               $p_user_2 = $p_user_1;
             }
@@ -106,5 +106,5 @@ for ($jj=10; $jj<=1_000_000; $jj*=10) {
     $std_change[$jj]    = $temp[1];
     
     $total =$mean_change_n[$jj] + $mean_change[$jj];
-    printf "[%7d] Winning chance: don't change door = %4.1f%::%4.1f%; \t change door = %4.1f%::%4.1f%; \t total = %5.1f%\n", $jj, $mean_change_n[$jj], $std_change_n[$jj], $mean_change[$jj], $std_change[$jj], $total;
+    printf "[%7d] Winning chance: not changing doors (mean/std) = %4.1f%::%4.1f%; \t changing doors (mean/std) = %4.1f%::%4.1f%; \t total = %5.1f%\n", $jj, $mean_change_n[$jj], $std_change_n[$jj], $mean_change[$jj], $std_change[$jj], $total;
 }

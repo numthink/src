@@ -1,68 +1,85 @@
 #!/usr/bin/tclsh
 puts "++ Das Ziegenproblem ++\n"
 
-for {set troca 0} {$troca <= 1} {incr troca} {
+# Procedure to calculate the probability of winning after N runs
+# when user don't change and change doors
+#
+proc calc_prob {nn} {
 
-    set ganhou_acum 0
-    for {set ii 0} {$ii < 10000} {incr ii} {
+    # 1st loop: [0] don't change doors; [1] change doors
+    for {set change_doors 0} {$change_doors <= 1} {incr change_doors} {
+        set accum 0
 
-        set p_carro   [expr {1 + int(floor(rand()*3))}];
-        set p_user_1  [expr {1 + int(floor(rand()*3))}];
+        # 2nd loop: simulate $nn times and accumulates results
+        for {set ii 0} {$ii < $nn} {incr ii} {
 
-        if {$p_user_1 == $p_carro} {
-            set p_host $p_carro;
-            while {$p_host == $p_carro} {
-                set p_host    [expr {1 + int(floor(rand()*3))}];
+            set p_prize   [expr {1 + int(floor(rand()*3))}];
+            set p_user_1  [expr {1 + int(floor(rand()*3))}];
+
+            # user chose right door at first guess
+            if {$p_user_1 == $p_prize} {
+                set p_host $p_prize;
+                while {$p_host == $p_prize} {
+                    set p_host    [expr {1 + int(floor(rand()*3))}];
+                }
+            # user chose wrong door at first guess
+            } else {
+                if       {($p_prize == 1) && ($p_user_1 == 2)} {
+                    set p_host 3;
+                } elseif {($p_prize == 1) && ($p_user_1 == 3)} {
+                    set p_host 2;
+                } elseif {($p_prize == 2) && ($p_user_1 == 1)} {
+                    set p_host 3;
+                } elseif {($p_prize == 2) && ($p_user_1 == 3)} {
+                    set p_host 1;
+                } elseif {($p_prize == 3) && ($p_user_1 == 1)} {
+                    set p_host 2;
+                } elseif {($p_prize == 3) && ($p_user_1 == 2)} {
+                    set p_host 1;
+                } else                                         {
+                    puts "Error!\n";
+                }
             }
-        } else {
-            if       {($p_carro == 1) && ($p_user_1 == 2)} {
-                set p_host 3;
-            } elseif {($p_carro == 1) && ($p_user_1 == 3)} {
-                set p_host 2;
-            } elseif {($p_carro == 2) && ($p_user_1 == 1)} {
-                set p_host 3;
-            } elseif {($p_carro == 2) && ($p_user_1 == 3)} {
-                set p_host 1;
-            } elseif {($p_carro == 3) && ($p_user_1 == 1)} {
-                set p_host 2;
-            } elseif {($p_carro == 3) && ($p_user_1 == 2)} {
-                set p_host 1;
-            } else                                         {
-                puts "Erro!\n";
+
+            # user final guess after opportunity to change doors
+            if ($change_doors) {
+                if       {($p_user_1 == 1) && ($p_host == 2)} {
+                    set p_user_2 3;
+                } elseif {($p_user_1 == 1) && ($p_host == 3)} {
+                    set p_user_2 2;
+                } elseif {($p_user_1 == 2) && ($p_host == 1)} {
+                    set p_user_2 3;
+                } elseif {($p_user_1 == 2) && ($p_host == 3)} {
+                    set p_user_2 1;
+                } elseif {($p_user_1 == 3) && ($p_host == 1)} {
+                    set p_user_2 2;
+                } elseif {($p_user_1 == 3) && ($p_host == 2)} {
+                    set p_user_2 1;
+                } else                                        {
+                    puts "Error!\n";
+                }
+            } else {
+              set p_user_2 $p_user_1;
             }
+
+            # check and store user result into accumulator
+            if {$p_user_2 == $p_prize} {
+                set won 1;
+            } else {
+                set won 0;
+            }
+
+            set accum [expr {$accum + $won}];
         }
 
-        if ($troca) {
-            if       {($p_user_1 == 1) && ($p_host == 2)} {
-                set p_user_2 3;
-            } elseif {($p_user_1 == 1) && ($p_host == 3)} {
-                set p_user_2 2;
-            } elseif {($p_user_1 == 2) && ($p_host == 1)} {
-                set p_user_2 3;
-            } elseif {($p_user_1 == 2) && ($p_host == 3)} {
-                set p_user_2 1;
-            } elseif {($p_user_1 == 3) && ($p_host == 1)} {
-                set p_user_2 2;
-            } elseif {($p_user_1 == 3) && ($p_host == 2)} {
-                set p_user_2 1;
-            } else                                        {
-                puts "Erro!\n";
-            }
-        } else {
-          set p_user_2 $p_user_1;
-        }
-
-        if {$p_user_2 == $p_carro} {
-            set ganhou 1;
-        } else {
-            set ganhou 0;
-        }
-
-        set ganhou_acum [expr {$ganhou_acum + $ganhou}];
-
-#        puts "\[$ii\] p_carro: $p_carro, p_user_1: $p_user_1, p_host: $p_host, p_user_2: $p_user_2, ganhou: $ganhou, ganhou_acum: $ganhou_acum";
+        # winning percentage after $nn runs
+        set result [lappend result [expr {100.0 * $accum / $ii}]];
     }
+    return $result
 
-    set ganhou_p100 [expr {100.0 * $ganhou_acum / $ii}];
-    puts "Troca:$troca, n = $ii, ganhou $ganhou_p100%";
+}
+
+for {set ii 10} {$ii <= 1000000} {set ii [expr $ii * 10]} {
+    set result [calc_prob $ii]
+    puts "\[$ii\] Winning chance: not changing doors: [lindex $result 0], changing doors: [lindex $result 1]";
 }
