@@ -90,11 +90,14 @@ sub next_prime {
 #     To limit execution time, current program uses a fixed 10-digit prime
 #     number for 'p', which is very small for cryptographic purposes but
 #     serves well for this example.
-# (2) 'g' does need to be big.
+# (2) 'g' does not need to be big.
 # (3) 'p', 'g', 'a' and 'b' are kept secret, whilst 'A' and 'B' are openly
 #     exchanged. Final key is calculated locally by each part, implying that,
 #     technically, the key is not really exchanged between parts.
-# (4) The two protagonits were named after Ada and Linda Lovelace. ;-)
+# (4) The two protagonists were named after Ada and Linda Lovelace. ;-)
+
+print "Simulation of Diffie-Hellman exchange key method for symmetric encryption.\n";
+print "Calculating keys...\n\n";
 
 for ($ii = 0; $ii < 13; $ii++) {             # run a few times to make sure it works
     
